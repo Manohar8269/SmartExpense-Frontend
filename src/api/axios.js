@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://smartexpense-waox.onrender.com/api",
+  baseURL: "https://smartexpense-backend-0kgk.onrender.com/api",
 });
 
 API.interceptors.request.use(

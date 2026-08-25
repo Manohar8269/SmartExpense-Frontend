@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">SmartExpense</string>
+    <string name="title_activity_main">SmartExpense</string>
+    <string name="package_name">com.smartexpense.ai</string>
+    <string name="custom_url_scheme">com.smartexpense.ai</string>
+</resources>

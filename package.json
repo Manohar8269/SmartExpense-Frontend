@@ -10,6 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.0",
+    "@capacitor/cli": "^7.6.8",
+    "@capacitor/core": "^8.5.0",
     "@tailwindcss/vite": "^4.3.3",
     "axios": "^1.19.0",
     "jspdf": "^4.2.1",

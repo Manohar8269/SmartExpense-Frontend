@@ -11,6 +11,7 @@ import AIInsights from "./pages/AIInsights";
 import Profile from "./pages/Profile";
 import Notifications from "./pages/Notifications";
 import TransactionDetails from "./pages/TransactionDetails";
+import AIChat from "./pages/AIChat";
 
 // Protected Route
 function ProtectedRoute({ children }) {
@@ -123,7 +124,18 @@ function App() {
         <Route
           path="/transactions/:id"
           element={
-           <TransactionDetails />
+             <ProtectedRoute>
+                <TransactionDetails />
+             </ProtectedRoute>
+           }
+          />
+
+        <Route
+          path="/ai-chat"
+          element={
+            <ProtectedRoute>
+              <AIChat />
+            </ProtectedRoute>
           }
           />
 

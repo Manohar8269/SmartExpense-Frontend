@@ -31,18 +31,15 @@ function Dashboard() {
   // ==========================================
   // MOBILE MENU
   // ==========================================
-  const [mobileMenuOpen, setMobileMenuOpen] =
-    useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // ==========================================
   // NOTIFICATIONS
   // MongoDB Based
   // ==========================================
-  const [notificationsOpen, setNotificationsOpen] =
-    useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
 
-  const [notifications, setNotifications] =
-    useState([]);
+  const [notifications, setNotifications] = useState([]);
 
   const [
     notificationsLoading,
@@ -56,30 +53,24 @@ function Dashboard() {
   // ==========================================
   const [budget, setBudget] = useState(null);
 
-  const [budgetLoading, setBudgetLoading] =
-    useState(false);
+  const [budgetLoading, setBudgetLoading] = useState(false);
 
   // ==========================================
   // GET USER FROM LOCAL STORAGE
   // ==========================================
   useEffect(() => {
-    const storedUser =
-      localStorage.getItem("user");
+    const storedUser = localStorage.getItem("user");
 
     if (!storedUser) {
       return;
     }
 
     try {
-      const parsedUser =
-        JSON.parse(storedUser);
+      const parsedUser = JSON.parse(storedUser);
 
       setUser(parsedUser);
     } catch (error) {
-      console.error(
-        "Invalid user data:",
-        error
-      );
+      console.error("Invalid user data:", error);
 
       localStorage.removeItem("user");
     }
@@ -94,12 +85,9 @@ function Dashboard() {
       setLoading(true);
       setError("");
 
-      console.log(
-        "Fetching transactions..."
-      );
+      console.log("Fetching transactions...");
 
-      const response =
-        await API.get("/transactions");
+      const response = await API.get("/transactions");
 
       console.log(
         "Transactions API Response:",
@@ -109,12 +97,8 @@ function Dashboard() {
       const transactionData =
         response?.data?.transactions;
 
-      if (
-        Array.isArray(transactionData)
-      ) {
-        setTransactions(
-          transactionData
-        );
+      if (Array.isArray(transactionData)) {
+        setTransactions(transactionData);
       } else {
         setTransactions([]);
       }
@@ -124,9 +108,7 @@ function Dashboard() {
         error
       );
 
-      if (
-        error?.response?.status === 401
-      ) {
+      if (error?.response?.status === 401) {
         logoutUser();
 
         localStorage.removeItem("user");
@@ -165,30 +147,23 @@ function Dashboard() {
     try {
       setBudgetLoading(true);
 
-      console.log(
-        "Fetching budget..."
-      );
+      console.log("Fetching budget...");
 
-      const response =
-        await API.get("/budget");
+      const response = await API.get("/budget");
 
       console.log(
         "Budget API Response:",
         response.data
       );
 
-      setBudget(
-        response?.data || null
-      );
+      setBudget(response?.data || null);
     } catch (error) {
       console.error(
         "Fetch Budget Error:",
         error
       );
 
-      if (
-        error?.response?.status === 401
-      ) {
+      if (error?.response?.status === 401) {
         logoutUser();
 
         localStorage.removeItem("user");
@@ -222,14 +197,11 @@ function Dashboard() {
     try {
       setNotificationsLoading(true);
 
-      console.log(
-        "Fetching notifications..."
-      );
+      console.log("Fetching notifications...");
 
-      const response =
-        await API.get(
-          "/notifications"
-        );
+      const response = await API.get(
+        "/notifications"
+      );
 
       console.log(
         "Notifications API Response:",
@@ -239,12 +211,8 @@ function Dashboard() {
       const notificationData =
         response?.data?.notifications;
 
-      if (
-        Array.isArray(notificationData)
-      ) {
-        setNotifications(
-          notificationData
-        );
+      if (Array.isArray(notificationData)) {
+        setNotifications(notificationData);
       } else {
         setNotifications([]);
       }
@@ -254,9 +222,7 @@ function Dashboard() {
         error
       );
 
-      if (
-        error?.response?.status === 401
-      ) {
+      if (error?.response?.status === 401) {
         logoutUser();
 
         localStorage.removeItem("user");
@@ -358,15 +324,12 @@ function Dashboard() {
     transactions
       .filter(
         (transaction) =>
-          transaction.type ===
-          "income"
+          transaction.type === "income"
       )
       .reduce(
         (total, transaction) =>
           total +
-          Number(
-            transaction.amount || 0
-          ),
+          Number(transaction.amount || 0),
         0
       );
 
@@ -377,15 +340,12 @@ function Dashboard() {
     transactions
       .filter(
         (transaction) =>
-          transaction.type ===
-          "expense"
+          transaction.type === "expense"
       )
       .reduce(
         (total, transaction) =>
           total +
-          Number(
-            transaction.amount || 0
-          ),
+          Number(transaction.amount || 0),
         0
       );
 
@@ -399,53 +359,43 @@ function Dashboard() {
   // BUDGET AMOUNT
   // ==========================================
   const budgetAmount =
-    Number(
-      budget?.monthlyBudget || 0
-    );
+    Number(budget?.monthlyBudget || 0);
 
   // ==========================================
   // CURRENT MONTH EXPENSE
   // ==========================================
-  const currentMonthExpense =
-    useMemo(() => {
-      const now = new Date();
+  const currentMonthExpense = useMemo(() => {
+    const now = new Date();
 
-      return transactions
-        .filter((transaction) => {
-          if (
-            transaction.type !==
-            "expense"
-          ) {
-            return false;
-          }
+    return transactions
+      .filter((transaction) => {
+        if (transaction.type !== "expense") {
+          return false;
+        }
 
-          const transactionDate =
-            new Date(
-              transaction.date
-            );
-
-          return (
-            transactionDate.getMonth() ===
-              now.getMonth() &&
-            transactionDate.getFullYear() ===
-              now.getFullYear()
-          );
-        })
-        .reduce(
-          (total, transaction) =>
-            total +
-            Number(
-              transaction.amount || 0
-            ),
-          0
+        const transactionDate = new Date(
+          transaction.date
         );
-    }, [transactions]);
+
+        return (
+          transactionDate.getMonth() ===
+            now.getMonth() &&
+          transactionDate.getFullYear() ===
+            now.getFullYear()
+        );
+      })
+      .reduce(
+        (total, transaction) =>
+          total +
+          Number(transaction.amount || 0),
+        0
+      );
+  }, [transactions]);
 
   // ==========================================
   // BUDGET SPENT
   // ==========================================
-  const budgetSpent =
-    currentMonthExpense;
+  const budgetSpent = currentMonthExpense;
 
   // ==========================================
   // BUDGET REMAINING
@@ -459,9 +409,7 @@ function Dashboard() {
   const budgetPercentage =
     budgetAmount > 0
       ? Math.round(
-          (budgetSpent /
-            budgetAmount) *
-            100
+          (budgetSpent / budgetAmount) * 100
         )
       : 0;
 
@@ -470,24 +418,20 @@ function Dashboard() {
   // ==========================================
   const budgetExceeded =
     budgetAmount > 0 &&
-    budgetSpent >=
-      budgetAmount;
+    budgetSpent >= budgetAmount;
 
   // ==========================================
   // BUDGET WARNING
   // ==========================================
   const budgetWarning =
     budgetAmount > 0 &&
-    budgetSpent >=
-      budgetAmount * 0.8 &&
+    budgetSpent >= budgetAmount * 0.8 &&
     !budgetExceeded;
 
   // ==========================================
   // FORMAT CURRENCY
   // ==========================================
-  const formatCurrency = (
-    amount
-  ) => {
+  const formatCurrency = (amount) => {
     return `₹${Number(
       amount || 0
     ).toLocaleString("en-IN")}`;
@@ -496,20 +440,15 @@ function Dashboard() {
   // ==========================================
   // FORMAT DATE
   // ==========================================
-  const formatDate = (
-    date
-  ) => {
+  const formatDate = (date) => {
     if (!date) {
       return "Unknown date";
     }
 
-    const parsedDate =
-      new Date(date);
+    const parsedDate = new Date(date);
 
     if (
-      Number.isNaN(
-        parsedDate.getTime()
-      )
+      Number.isNaN(parsedDate.getTime())
     ) {
       return "Invalid date";
     }
@@ -529,229 +468,200 @@ function Dashboard() {
   // These are calculated locally.
   // MongoDB will store them.
   // ==========================================
-  const generatedAlerts =
-    useMemo(() => {
-      const alerts = [];
+  const generatedAlerts = useMemo(() => {
+    const alerts = [];
 
-      // ----------------------------------------
-      // Budget Exceeded
-      // ----------------------------------------
-      if (budgetExceeded) {
-        alerts.push({
-          id: "budget-exceeded",
-          type: "danger",
-          icon: "🚨",
-          title:
-            "Budget Exceeded",
-          message: `You have exceeded your monthly budget by ${formatCurrency(
-            Math.abs(
-              budgetRemaining
-            )
-          )}.`,
-        });
-      }
+    // ----------------------------------------
+    // Budget Exceeded
+    // ----------------------------------------
+    if (budgetExceeded) {
+      alerts.push({
+        id: "budget-exceeded",
+        type: "danger",
+        icon: "🚨",
+        title: "Budget Exceeded",
+        message: `You have exceeded your monthly budget by ${formatCurrency(
+          Math.abs(budgetRemaining)
+        )}.`,
+      });
+    }
 
-      // ----------------------------------------
-      // Budget Warning
-      // ----------------------------------------
-      else if (budgetWarning) {
-        alerts.push({
-          id: "budget-warning",
-          type: "warning",
-          icon: "⚠️",
-          title:
-            "Budget Warning",
-          message: `You have used ${budgetPercentage}% of your monthly budget.`,
-        });
-      }
+    // ----------------------------------------
+    // Budget Warning
+    // ----------------------------------------
+    else if (budgetWarning) {
+      alerts.push({
+        id: "budget-warning",
+        type: "warning",
+        icon: "⚠️",
+        title: "Budget Warning",
+        message: `You have used ${budgetPercentage}% of your monthly budget.`,
+      });
+    }
 
-      // ----------------------------------------
-      // Negative Balance
-      // ----------------------------------------
-      if (totalBalance < 0) {
-        alerts.push({
-          id: "negative-balance",
-          type: "danger",
-          icon: "🚨",
-          title:
-            "Negative Balance",
-          message:
-            "Your expenses are higher than your income.",
-        });
-      }
+    // ----------------------------------------
+    // Negative Balance
+    // ----------------------------------------
+    if (totalBalance < 0) {
+      alerts.push({
+        id: "negative-balance",
+        type: "danger",
+        icon: "🚨",
+        title: "Negative Balance",
+        message:
+          "Your expenses are higher than your income.",
+      });
+    }
 
-      // ----------------------------------------
-      // High Expense Ratio
-      // ----------------------------------------
-      if (
-        totalIncome > 0 &&
-        totalExpense >=
-          totalIncome * 0.8 &&
-        totalExpense <=
-          totalIncome
-      ) {
-        alerts.push({
-          id: "high-expense",
-          type: "warning",
-          icon: "⚠️",
-          title:
-            "High Spending Alert",
-          message:
-            "You have used 80% or more of your total income.",
-        });
-      }
+    // ----------------------------------------
+    // High Expense Ratio
+    // ----------------------------------------
+    if (
+      totalIncome > 0 &&
+      totalExpense >= totalIncome * 0.8 &&
+      totalExpense <= totalIncome
+    ) {
+      alerts.push({
+        id: "high-expense",
+        type: "warning",
+        icon: "⚠️",
+        title: "High Spending Alert",
+        message:
+          "You have used 80% or more of your total income.",
+      });
+    }
 
-      // ----------------------------------------
-      // Expense > Income
-      // ----------------------------------------
-      if (
-        totalExpense > 0 &&
-        totalExpense >
-          totalIncome &&
-        totalIncome > 0
-      ) {
-        alerts.push({
-          id: "expense-over-income",
-          type: "danger",
-          icon: "💸",
-          title:
-            "Expenses Exceed Income",
-          message:
-            "Your total expenses are currently higher than your income.",
-        });
-      }
+    // ----------------------------------------
+    // Expense > Income
+    // ----------------------------------------
+    if (
+      totalExpense > 0 &&
+      totalExpense > totalIncome &&
+      totalIncome > 0
+    ) {
+      alerts.push({
+        id: "expense-over-income",
+        type: "danger",
+        icon: "💸",
+        title: "Expenses Exceed Income",
+        message:
+          "Your total expenses are currently higher than your income.",
+      });
+    }
 
-      // ----------------------------------------
-      // Many Transactions
-      // ----------------------------------------
-      if (
-        transactions.length >= 10
-      ) {
-        alerts.push({
-          id: "many-transactions",
-          type: "info",
-          icon: "📊",
-          title:
-            "High Transaction Activity",
-          message:
-            "You have recorded 10 or more transactions.",
-        });
-      }
+    // ----------------------------------------
+    // Many Transactions
+    // ----------------------------------------
+    if (transactions.length >= 10) {
+      alerts.push({
+        id: "many-transactions",
+        type: "info",
+        icon: "📊",
+        title: "High Transaction Activity",
+        message:
+          "You have recorded 10 or more transactions.",
+      });
+    }
 
-      // ----------------------------------------
-      // No Transactions
-      // ----------------------------------------
-      if (
-        transactions.length ===
-          0 &&
-        !loading
-      ) {
-        alerts.push({
-          id: "no-transactions",
-          type: "info",
-          icon: "💳",
-          title:
-            "No Transactions Yet",
-          message:
-            "Add your first transaction to start tracking your finances.",
-        });
-      }
+    // ----------------------------------------
+    // No Transactions
+    // ----------------------------------------
+    if (
+      transactions.length === 0 &&
+      !loading
+    ) {
+      alerts.push({
+        id: "no-transactions",
+        type: "info",
+        icon: "💳",
+        title: "No Transactions Yet",
+        message:
+          "Add your first transaction to start tracking your finances.",
+      });
+    }
 
-      return alerts;
-    }, [
-      budgetExceeded,
-      budgetWarning,
-      budgetPercentage,
-      budgetRemaining,
-      totalBalance,
-      totalIncome,
-      totalExpense,
-      transactions.length,
-      loading,
-    ]);
+    return alerts;
+  }, [
+    budgetExceeded,
+    budgetWarning,
+    budgetPercentage,
+    budgetRemaining,
+    totalBalance,
+    totalIncome,
+    totalExpense,
+    transactions.length,
+    loading,
+  ]);
 
   // ==========================================
   // SYNC GENERATED ALERTS WITH MONGODB
   // ==========================================
   useEffect(() => {
-    const syncNotifications =
-      async () => {
-        if (
-          loading ||
-          budgetLoading ||
-          generatedAlerts.length ===
-            0
-        ) {
-          return;
-        }
+    const syncNotifications = async () => {
+      if (
+        loading ||
+        budgetLoading ||
+        generatedAlerts.length === 0
+      ) {
+        return;
+      }
 
-        for (
-          const alert of generatedAlerts
-        ) {
-          try {
-            const alreadyExists =
-              notifications.some(
-                (notification) =>
-                  notification.alertKey ===
-                    alert.id &&
-                  notification.dismissed !==
-                    true
-              );
-
-            if (alreadyExists) {
-              continue;
-            }
-
-            const response =
-              await API.post(
-                "/notifications",
-                {
-                  alertKey: alert.id,
-                  type: alert.type,
-                  icon: alert.icon,
-                  title: alert.title,
-                  message: alert.message,
-                }
-              );
-
-            if (
-              response?.data
-                ?.notification
-            ) {
-              const newNotification =
-                response.data
-                  .notification;
-
-              setNotifications(
-                (prev) => {
-                  const exists =
-                    prev.some(
-                      (
-                        notification
-                      ) =>
-                        notification._id ===
-                        newNotification._id
-                    );
-
-                  if (exists) {
-                    return prev;
-                  }
-
-                  return [
-                    newNotification,
-                    ...prev,
-                  ];
-                }
-              );
-            }
-          } catch (error) {
-            console.error(
-              "Create Notification Error:",
-              error
+      for (const alert of generatedAlerts) {
+        try {
+          const alreadyExists =
+            notifications.some(
+              (notification) =>
+                notification.alertKey ===
+                  alert.id &&
+                notification.dismissed !== true
             );
+
+          if (alreadyExists) {
+            continue;
           }
+
+          const response = await API.post(
+            "/notifications",
+            {
+              alertKey: alert.id,
+              type: alert.type,
+              icon: alert.icon,
+              title: alert.title,
+              message: alert.message,
+            }
+          );
+
+          if (
+            response?.data?.notification
+          ) {
+            const newNotification =
+              response.data.notification;
+
+            setNotifications((prev) => {
+              const exists = prev.some(
+                (notification) =>
+                  notification._id ===
+                  newNotification._id
+              );
+
+              if (exists) {
+                return prev;
+              }
+
+              return [
+                newNotification,
+                ...prev,
+              ];
+            });
+          }
+        } catch (error) {
+          console.error(
+            "Create Notification Error:",
+            error
+          );
         }
-      };
+      }
+    };
 
     syncNotifications();
   }, [
@@ -767,8 +677,7 @@ function Dashboard() {
   const visibleNotifications =
     notifications.filter(
       (notification) =>
-        notification.dismissed !==
-        true
+        notification.dismissed !== true
     );
 
   // ==========================================
@@ -792,29 +701,21 @@ function Dashboard() {
   const markNotificationAsRead =
     async (id) => {
       try {
-        const response =
-          await API.put(
-            `/notifications/${id}/read`
-          );
+        const response = await API.put(
+          `/notifications/${id}/read`
+        );
 
         const updatedNotification =
-          response?.data
-            ?.notification;
+          response?.data?.notification;
 
-        if (
-          updatedNotification
-        ) {
-          setNotifications(
-            (prev) =>
-              prev.map(
-                (
-                  notification
-                ) =>
-                  notification._id ===
-                  id
-                    ? updatedNotification
-                    : notification
-              )
+        if (updatedNotification) {
+          setNotifications((prev) =>
+            prev.map(
+              (notification) =>
+                notification._id === id
+                  ? updatedNotification
+                  : notification
+            )
           );
         }
       } catch (error) {
@@ -828,31 +729,25 @@ function Dashboard() {
   // ==========================================
   // MARK ALL AS READ
   // ==========================================
-  const markAllAsRead =
-    async () => {
-      try {
-        await API.put(
-          "/notifications/read-all"
-        );
+  const markAllAsRead = async () => {
+    try {
+      await API.put(
+        "/notifications/read-all"
+      );
 
-        setNotifications(
-          (prev) =>
-            prev.map(
-              (
-                notification
-              ) => ({
-                ...notification,
-                read: true,
-              })
-            )
-        );
-      } catch (error) {
-        console.error(
-          "Mark All Read Error:",
-          error
-        );
-      }
-    };
+      setNotifications((prev) =>
+        prev.map((notification) => ({
+          ...notification,
+          read: true,
+        }))
+      );
+    } catch (error) {
+      console.error(
+        "Mark All Read Error:",
+        error
+      );
+    }
+  };
 
   // ==========================================
   // DISMISS ONE NOTIFICATION
@@ -864,13 +759,11 @@ function Dashboard() {
           `/notifications/${id}`
         );
 
-        setNotifications(
-          (prev) =>
-            prev.filter(
-              (notification) =>
-                notification._id !==
-                id
-            )
+        setNotifications((prev) =>
+          prev.filter(
+            (notification) =>
+              notification._id !== id
+          )
         );
       } catch (error) {
         console.error(
@@ -892,9 +785,7 @@ function Dashboard() {
 
         setNotifications([]);
 
-        setNotificationsOpen(
-          false
-        );
+        setNotificationsOpen(false);
       } catch (error) {
         console.error(
           "Clear All Notifications Error:",
@@ -963,9 +854,7 @@ function Dashboard() {
 
       {mobileMenuOpen && (
         <div
-          onClick={
-            closeMobileMenu
-          }
+          onClick={closeMobileMenu}
           className="fixed inset-0 z-30 bg-black/50 lg:hidden"
         />
       )}
@@ -995,9 +884,7 @@ function Dashboard() {
           {/* Profile */}
           <button
             onClick={() =>
-              navigate(
-                "/profile"
-              )
+              navigate("/profile")
             }
             className="mb-2 flex w-full items-center rounded-lg px-4 py-3 text-left text-slate-300 transition hover:bg-white/10 hover:text-white"
           >
@@ -1010,9 +897,7 @@ function Dashboard() {
           {/* Dashboard */}
           <button
             onClick={() =>
-              navigate(
-                "/dashboard"
-              )
+              navigate("/dashboard")
             }
             className="mb-2 flex w-full items-center rounded-lg bg-blue-600 px-4 py-3 text-left font-medium"
           >
@@ -1025,9 +910,7 @@ function Dashboard() {
           {/* Transactions */}
           <button
             onClick={() =>
-              navigate(
-                "/transactions"
-              )
+              navigate("/transactions")
             }
             className="mb-2 flex w-full items-center rounded-lg px-4 py-3 text-left text-slate-300 transition hover:bg-white/10 hover:text-white"
           >
@@ -1040,9 +923,7 @@ function Dashboard() {
           {/* Add Expense */}
           <button
             onClick={() =>
-              navigate(
-                "/add-expense"
-              )
+              navigate("/add-expense")
             }
             className="mb-2 flex w-full items-center rounded-lg px-4 py-3 text-left text-slate-300 transition hover:bg-white/10 hover:text-white"
           >
@@ -1055,9 +936,7 @@ function Dashboard() {
           {/* Reports */}
           <button
             onClick={() =>
-              navigate(
-                "/reports"
-              )
+              navigate("/reports")
             }
             className="mb-2 flex w-full items-center rounded-lg px-4 py-3 text-left text-slate-300 transition hover:bg-white/10 hover:text-white"
           >
@@ -1070,9 +949,7 @@ function Dashboard() {
           {/* AI Insights */}
           <button
             onClick={() =>
-              navigate(
-                "/ai-insights"
-              )
+              navigate("/ai-insights")
             }
             className="mb-2 flex w-full items-center rounded-lg px-4 py-3 text-left text-slate-300 transition hover:bg-white/10 hover:text-white"
           >
@@ -1082,15 +959,28 @@ function Dashboard() {
             AI Insights
           </button>
 
+          {/* ==========================================
+              AI CHAT - ADDED
+          ========================================== */}
+          <button
+            onClick={() =>
+              navigate("/ai-chat")
+            }
+            className="mb-2 flex w-full items-center rounded-lg px-4 py-3 text-left text-slate-300 transition hover:bg-white/10 hover:text-white"
+          >
+            <span className="mr-3">
+              💬
+            </span>
+            AI Chat
+          </button>
+
         </nav>
 
         {/* Logout */}
         <div className="absolute bottom-6 left-4 right-4">
 
           <button
-            onClick={
-              handleLogout
-            }
+            onClick={handleLogout}
             className="flex w-full items-center rounded-lg bg-red-500/10 px-4 py-3 text-left text-red-400 transition hover:bg-red-500 hover:text-white"
           >
             <span className="mr-3">
@@ -1131,9 +1021,7 @@ function Dashboard() {
           </div>
 
           <button
-            onClick={
-              closeMobileMenu
-            }
+            onClick={closeMobileMenu}
             className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 text-xl hover:bg-white/20"
           >
             ✕
@@ -1147,9 +1035,7 @@ function Dashboard() {
           {/* Profile */}
           <button
             onClick={() =>
-              goTo(
-                "/profile"
-              )
+              goTo("/profile")
             }
             className="mb-2 flex w-full items-center rounded-lg px-4 py-3 text-left text-slate-300 transition hover:bg-white/10 hover:text-white"
           >
@@ -1162,9 +1048,7 @@ function Dashboard() {
           {/* Dashboard */}
           <button
             onClick={() =>
-              goTo(
-                "/dashboard"
-              )
+              goTo("/dashboard")
             }
             className="mb-2 flex w-full items-center rounded-lg bg-blue-600 px-4 py-3 text-left font-medium"
           >
@@ -1177,9 +1061,7 @@ function Dashboard() {
           {/* Transactions */}
           <button
             onClick={() =>
-              goTo(
-                "/transactions"
-              )
+              goTo("/transactions")
             }
             className="mb-2 flex w-full items-center rounded-lg px-4 py-3 text-left text-slate-300 transition hover:bg-white/10 hover:text-white"
           >
@@ -1192,9 +1074,7 @@ function Dashboard() {
           {/* Add Expense */}
           <button
             onClick={() =>
-              goTo(
-                "/add-expense"
-              )
+              goTo("/add-expense")
             }
             className="mb-2 flex w-full items-center rounded-lg px-4 py-3 text-left text-slate-300 transition hover:bg-white/10 hover:text-white"
           >
@@ -1207,9 +1087,7 @@ function Dashboard() {
           {/* Reports */}
           <button
             onClick={() =>
-              goTo(
-                "/reports"
-              )
+              goTo("/reports")
             }
             className="mb-2 flex w-full items-center rounded-lg px-4 py-3 text-left text-slate-300 transition hover:bg-white/10 hover:text-white"
           >
@@ -1222,9 +1100,7 @@ function Dashboard() {
           {/* AI Insights */}
           <button
             onClick={() =>
-              goTo(
-                "/ai-insights"
-              )
+              goTo("/ai-insights")
             }
             className="mb-2 flex w-full items-center rounded-lg px-4 py-3 text-left text-slate-300 transition hover:bg-white/10 hover:text-white"
           >
@@ -1234,15 +1110,28 @@ function Dashboard() {
             AI Insights
           </button>
 
+          {/* ==========================================
+              AI CHAT - ADDED
+          ========================================== */}
+          <button
+            onClick={() =>
+              goTo("/ai-chat")
+            }
+            className="mb-2 flex w-full items-center rounded-lg px-4 py-3 text-left text-slate-300 transition hover:bg-white/10 hover:text-white"
+          >
+            <span className="mr-3">
+              💬
+            </span>
+            AI Chat
+          </button>
+
         </nav>
 
         {/* Mobile Logout */}
         <div className="absolute bottom-6 left-4 right-4">
 
           <button
-            onClick={
-              handleLogout
-            }
+            onClick={handleLogout}
             className="flex w-full items-center rounded-lg bg-red-500/10 px-4 py-3 text-left text-red-400 transition hover:bg-red-500 hover:text-white"
           >
             <span className="mr-3">
@@ -1272,9 +1161,7 @@ function Dashboard() {
             {/* Mobile Menu */}
             <button
               onClick={() =>
-                setMobileMenuOpen(
-                  true
-                )
+                setMobileMenuOpen(true)
               }
               className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-xl text-slate-700 transition hover:bg-slate-200 lg:hidden"
             >
@@ -1299,9 +1186,7 @@ function Dashboard() {
 
               {/* Notification Bell */}
               <div
-                ref={
-                  notificationRef
-                }
+                ref={notificationRef}
                 className="relative"
               >
 
@@ -1309,8 +1194,7 @@ function Dashboard() {
                   type="button"
                   onClick={() =>
                     setNotificationsOpen(
-                      (prev) =>
-                        !prev
+                      (prev) => !prev
                     )
                   }
                   disabled={
@@ -1324,8 +1208,7 @@ function Dashboard() {
 
                   {unreadCount > 0 && (
                     <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white ring-2 ring-white">
-                      {unreadCount >
-                      9
+                      {unreadCount > 9
                         ? "9+"
                         : unreadCount}
                     </span>
@@ -1404,9 +1287,7 @@ function Dashboard() {
                       ) : (
 
                         visibleNotifications.map(
-                          (
-                            notification
-                          ) => {
+                          (notification) => {
 
                             const style =
                               getNotificationStyle(
@@ -1560,9 +1441,7 @@ function Dashboard() {
               {/* Avatar */}
               <button
                 onClick={() =>
-                  navigate(
-                    "/profile"
-                  )
+                  navigate("/profile")
                 }
                 className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white transition hover:bg-blue-700 sm:h-11 sm:w-11"
                 title="Profile"
@@ -1840,9 +1719,7 @@ function Dashboard() {
                   <div className="mt-2 flex justify-between gap-4">
 
                     <span className="text-xs text-slate-400">
-                      {budgetPercentage}%
-                      {" "}
-                      used
+                      {budgetPercentage}% used
                     </span>
 
                     <span
@@ -1857,8 +1734,7 @@ function Dashboard() {
                           budgetRemaining
                         )
                       )}{" "}
-                      {budgetRemaining <
-                      0
+                      {budgetRemaining < 0
                         ? "over budget"
                         : "remaining"}
                     </span>
@@ -2030,9 +1906,7 @@ function Dashboard() {
 
                             </div>
 
-                            {/* =================================
-                                AMOUNT + VIEW
-                            ================================== */}
+                            {/* AMOUNT + VIEW */}
 
                             <div className="flex shrink-0 items-center justify-between gap-3 sm:justify-end">
 
@@ -2081,8 +1955,7 @@ function Dashboard() {
 
               {/* View all */}
 
-              {transactions.length >
-                5 && (
+              {transactions.length > 5 && (
                 <button
                   type="button"
                   onClick={() =>
@@ -2114,8 +1987,7 @@ function Dashboard() {
 
               <div className="mt-6">
 
-                {totalExpense ===
-                0 ? (
+                {totalExpense === 0 ? (
                   <div className="flex min-h-52 items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 p-6">
 
                     <div className="text-center">

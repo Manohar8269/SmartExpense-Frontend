@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const API = axios.create({
-  // baseURL: "https://smartexpense-backend-0kgk.onrender.com/api",
-  baseURL: "http://localhost:5000/api",
+  baseURL: "https://smartexpense-backend-0kgk.onrender.com/api",
+  // baseURL: "http://localhost:5000/api",
 });
 
 API.interceptors.request.use(
